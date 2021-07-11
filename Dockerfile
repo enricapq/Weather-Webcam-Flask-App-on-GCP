@@ -6,13 +6,12 @@ ENV APP_HOME /app
 
 # copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt $APP_HOME/requirements.txt
-RUN pip install -r requirements.txt
 
-# copy local code to container image
 WORKDIR $APP_HOME
 
+RUN pip install -r requirements.txt
+
 COPY . ./
-RUN pip install -r requirements
 # install gunicorn to run on Cloud Run, not needed locally
 RUN pip install gunicorn
 

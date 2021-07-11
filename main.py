@@ -1,13 +1,13 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 
 
 @app.route("/")
 def hello_world():
-    return "Hello world!"
+    return render_template('index.html', title="page")
 
 
 if __name__ == "__main__":
