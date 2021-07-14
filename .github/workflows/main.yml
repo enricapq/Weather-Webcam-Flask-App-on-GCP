@@ -13,7 +13,7 @@ jobs:
   deploy:
     name: Deploy to Cloud Run
     runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, 'deploy')"
+    # if: "contains(github.event.head_commit.message, 'deploy')"
     steps:
       - uses: actions/checkout@v2
 
@@ -23,6 +23,7 @@ jobs:
           version: "290.0.1"
           service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
 
       # Build and push image to Google Container Registry
       - name: Build
