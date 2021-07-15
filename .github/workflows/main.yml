@@ -15,19 +15,32 @@ jobs:
     runs-on: ubuntu-latest
     # if: "contains(github.event.head_commit.message, 'deploy')"
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@v2
         with:
-          version: "290.0.1"
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
           service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
 
-      # Build and push image to Google Container Registry
-      - name: Build
-        run: gcloud builds submit --tag gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA
+      # Configure Docker with Credentials
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
 
+      # Build the Docker image
+      - name: Build
+        run: |
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:$GITHUB_SHA
+          gcloud config set run/region europe-west3
+      
+      # Deploy the Docker image
       - name: Deploy
-        run: gcloud run deploy $APP_ID --image gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA --platform managed --region $RUN_REGION --allow-unauthenticated
+        run: gcloud run deploy ${{ secrets.GCP_APPLICATION }} --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:$GITHUB_SHA \
+          --platform managed \
+          --region europe-west3 \
+          --allow-unauthenticated
