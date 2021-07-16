@@ -44,8 +44,7 @@ jobs:
 
       # Configure Docker with Credentials
       - name: Configure Docker
-        run: |
-          gcloud auth configure-docker
+        run: gcloud auth configure-docker
 
       # Build the Docker image
       - name: Build
@@ -59,8 +58,9 @@ jobs:
       
       # Deploy the Docker image
       - name: Deploy
-        run: gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
-          --region europe-west3 \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:${{ github.sha }} \
-          --platform "managed" \
-          --allow-unauthenticated
+        run: |-
+          gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
+            --region europe-west3 \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:${{ github.sha }} \
+            --platform "managed" \
+            --allow-unauthenticated
