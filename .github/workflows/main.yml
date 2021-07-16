@@ -24,22 +24,14 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
 
-#       # Build and push image to Google Container Registry
-#       - name: Build
-#         run: gcloud builds submit --tag gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA
-
-#       - name: Deploy
-#         run: gcloud run deploy $APP_ID --image gcr.io/$PROJECT_ID/$APP_ID:$GITHUB_SHA --platform managed --region $RUN_REGION --allow-unauthenticated
-
-
-      # Setup gcloud CLI
-      - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.0
-        with:
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          export_default_credentials: true
+#       # Setup gcloud CLI
+#       - name: Setup Cloud SDK
+#         uses: google-github-actions/setup-gcloud@v0.2.0
+#         with:
+#           service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+#           service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
+#           project_id: ${{ secrets.GCP_PROJECT_ID }}
+#           export_default_credentials: true
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -48,12 +40,6 @@ jobs:
       # Build the Docker image
       - name: Build
         run: gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:${{ github.sha }}
-      
-#       - name: Build
-#         run: |
-#           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-#           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}
-#           gcloud config set run/region europe-west3
       
       # Deploy the Docker image
       - name: Deploy
