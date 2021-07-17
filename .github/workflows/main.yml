@@ -31,13 +31,13 @@ jobs:
       # Build the Docker image
       - name: Build
         # use --gcs-log-dir to allow log streaming
-        run: gcloud builds submit --gcs-log-dir gs://${{ secrets.GCP_STORAGE_NAME }}/cloud_run_log_build --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:${{ github.sha }}
+        run: gcloud builds submit --gcs-log-dir gs://${{ secrets.GCP_STORAGE_NAME }}/cloud_run_log_build --tag gcr.io/$PROJECT_ID/${{ secrets.GCP_APPLICATION }}:${{ github.sha }}
       
       # Deploy the Docker image
       - name: Deploy
         run: |-
           gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
             --region europe-west3 \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:${{ github.sha }} \
+            --image gcr.io/$PROJECT_ID/${{ secrets.GCP_APPLICATION }}:${{ github.sha }} \
             --platform "managed" \
             --allow-unauthenticated
