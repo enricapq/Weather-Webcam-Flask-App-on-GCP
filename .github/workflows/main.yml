@@ -6,9 +6,10 @@ on:
       - main
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  APP_ID: weather-webcam
+  APP_ID: {{ secrets.GCP_APPLICATION }}
   RUN_REGION: europe-west3
-  SA_KEY_JSON: ${{ secrets.GCP_SA_KEY_JSON }}
+  SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY_JSON }}
+  STORAGE_NAME: ${{ secrets.GCP_STORAGE_NAME }}
 jobs:
   deploy:
     name: Deploy to Cloud Run
@@ -22,7 +23,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.0
         with:
           project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY_JSON }}
+          service_account_key: ${{ env.SERVICE_ACCOUNT_KEY }}
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -31,13 +32,13 @@ jobs:
       # Build the Docker image
       - name: Build
         # use --gcs-log-dir to allow log streaming
-        run: gcloud builds submit --gcs-log-dir gs://${{ secrets.GCP_STORAGE_NAME }}/cloud_run_log_build --tag gcr.io/$PROJECT_ID/${{ secrets.GCP_APPLICATION }}:${{ github.sha }}
+        run: gcloud builds submit --gcs-log-dir gs://$STORAGE_NAME/cloud_run_log_build --tag gcr.io/$PROJECT_ID/$APP_ID:${{ github.sha }}
       
       # Deploy the Docker image
       - name: Deploy
         run: |-
-          gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
-            --region europe-west3 \
-            --image gcr.io/$PROJECT_ID/${{ secrets.GCP_APPLICATION }}:${{ github.sha }} \
+          gcloud run deploy $APP_ID \
+            --region $RUN_REGION \
+            --image gcr.io/$PROJECT_ID/$APP_ID:${{ github.sha }} \
             --platform "managed" \
             --allow-unauthenticated
