@@ -8,7 +8,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  APP_ID: {{ secrets.GCP_APPLICATION }}
+  APP_ID: ${{ secrets.GCP_APPLICATION }}
   RUN_REGION: europe-west3
   SA_KEY_JSON: ${{ secrets.GCP_SA_KEY_JSON }}
   STORAGE_NAME: ${{ secrets.GCP_STORAGE_NAME }}
