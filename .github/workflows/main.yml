@@ -1,18 +1,15 @@
 # .github/workflows/deploy.yml
 name: Deploy to Google Cloud Run
-
 on:
   push:
     branches:
       - main
-
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   APP_ID: ${{ secrets.GCP_APPLICATION }}
   RUN_REGION: europe-west3
   SA_KEY_JSON: ${{ secrets.GCP_SA_KEY_JSON }}
   STORAGE_NAME: ${{ secrets.GCP_STORAGE_NAME }}
-
 jobs:
   deploy:
     name: Deploy to Cloud Run
